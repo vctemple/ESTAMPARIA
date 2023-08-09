@@ -10,7 +10,7 @@ dotenv.config();
 //Carregamento do banco de dados
 dbConnection();
 
-//Criação do objeto com tooling
+//Carregamento do framework Express
 const app = express();
 
 //Carregamento dos middleware necessários para realizar as requisições HTTP
