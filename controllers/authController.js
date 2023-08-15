@@ -6,7 +6,7 @@ import JWT from "jsonwebtoken";
 export const cadastroController = async(req, res) => {
     try{
         const { nome, email, cpf, dataNascimento, telefone, senha, cep, endereco, numEnd, bairro, complementoEnd, cidade, estado, perfil } = req.body;
-        
+        console.log(nome, email, cpf, dataNascimento, telefone, senha, cep, endereco, numEnd, bairro, complementoEnd, cidade, estado, perfil)
         //Validações
         //complementar com mais validações!
         if(!nome) return res.send({error: "Nome é obrigatório!"});

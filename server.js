@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import dbConnection from "./config/database.js";
 import authRouter from "./routes/authRoute.js";
+import cors from "cors";
 
 //Carregamento das variáveis de ambiente
 dotenv.config();
@@ -14,6 +15,7 @@ dbConnection();
 const app = express();
 
 //Carregamento dos middleware necessários para realizar as requisições HTTP
+app.use(cors()); //desta forma o cors autoria qualquer origem de requisição
 app.use(express.json());
 app.use(morgan("[:date[web]] ':method :url HTTP/:http-version' :status"));
 
