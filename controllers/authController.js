@@ -6,28 +6,28 @@ import JWT from "jsonwebtoken";
 export const cadastroController = async(req, res) => {
     try{
         const { nome, email, cpf, dataNascimento, telefone, senha, cep, endereco, numEnd, bairro, complementoEnd, cidade, estado, perfil } = req.body;
-        console.log(nome, email, cpf, dataNascimento, telefone, senha, cep, endereco, numEnd, bairro, complementoEnd, cidade, estado, perfil)
+        
         //Validações
         //complementar com mais validações!
-        if(!nome) return res.send({error: "Nome é obrigatório!"});
-        if(!email) return res.send({error: "E-mail é obrigatório!"});
-        if(!cpf) return res.send({error: "CPF é obrigatório!"});
-        if(!dataNascimento) return res.send({error: "Data de nascimento é obrigatório!"});
-        if(!telefone) return res.send({error: "Telefone é obrigatório!"});
-        if(!senha) return res.send({error: "Senha é obrigatório!"});
-        if(!cep) return res.send({error: "CEP é obrigatório!"});
-        if(!endereco) return res.send({error: "Endereço é obrigatório!"});
-        if(!numEnd) return res.send({error: "Número é obrigatório!"});
-        if(!bairro) return res.send({error: "Bairro é obrigatório!"});
-        if(!cidade) return res.send({error: "Cidade é obrigatório!"});
-        if(!estado) return res.send({error: "Estado é obrigatório!"});
+        if(!nome) return res.send({message: "Nome é obrigatório!"});
+        if(!email) return res.send({message: "E-mail é obrigatório!"});
+        if(!cpf) return res.send({message: "CPF é obrigatório!"});
+        if(!dataNascimento) return res.send({message: "Data de nascimento é obrigatório!"});
+        if(!telefone) return res.send({message: "Telefone é obrigatório!"});
+        if(!senha) return res.send({message: "Senha é obrigatório!"});
+        if(!cep) return res.send({message: "CEP é obrigatório!"});
+        if(!endereco) return res.send({message: "Endereço é obrigatório!"});
+        if(!numEnd) return res.send({message: "Número é obrigatório!"});
+        if(!bairro) return res.send({message: "Bairro é obrigatório!"});
+        if(!cidade) return res.send({message: "Cidade é obrigatório!"});
+        if(!estado) return res.send({message: "Estado é obrigatório!"});
         
         //Checagem de existência de usuário
         const cpfExistente = await usuariosModel.findOne({cpf});
         const emailExistente = await usuariosModel.findOne({email});
         if(cpfExistente||emailExistente){
             return res.status(200).send({
-                success:true,
+                success:false,
                 message:"Usuário já cadastrado!"
             });
         }
@@ -59,8 +59,8 @@ export const loginController = async (req, res) => {
     try {
         //Validações
         const { email, senha } = req.body;
-        if(!email) return res.send({error: "E-mail é obrigatório!"});
-        if(!senha) return res.send({error: "Senha é obrigatório!"});
+        if(!email) return res.send({message: "E-mail é obrigatório!"});
+        if(!senha) return res.send({message: "Senha é obrigatório!"});
 
         //Checagem de existência de usuário
         const usuario = await usuariosModel.findOne({email});   
@@ -84,7 +84,7 @@ export const loginController = async (req, res) => {
         const token = await JWT.sign({_id:usuario.id}, process.env.SECRET, {expiresIn: "1h"});
         res.status(200).send({
             success:true,
-            message:"Login efetuado com sucesso!",
+            message:"Login com sucesso!",
             usuario, //checar a relevância posteriormente!
             token
         })
