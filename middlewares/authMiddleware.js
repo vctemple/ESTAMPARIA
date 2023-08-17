@@ -4,6 +4,7 @@ import usuariosModel from "../Models/usuariosModel.js";
 //Verificação das rotas por token de acesso
 export const verificaTokenLogin = async (req, res, next) => {
     try {
+        console.log(req.headers.authorization);
         const decoded = JWT.verify(req.headers.authorization, process.env.SECRET);
         req.usuario = decoded;
         next();

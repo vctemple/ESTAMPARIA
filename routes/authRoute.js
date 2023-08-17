@@ -12,6 +12,11 @@ authRouter.post("/cadastro", cadastroController);
 //Login de acesso
 authRouter.post("/login", loginController);
 
+//Autenticação de login
+authRouter.get("/auth-login", verificaTokenLogin, (req, res) => {
+    res.status(200).send({ ok: true });
+});
+
 //teste
 authRouter.get("/testeAdmin", verificaTokenLogin, verificaPerfilAdmin, testeController);
 authRouter.get("/testeGerenteAdmin", verificaTokenLogin, verificaPerfilGerenteAdmin, testeController);
