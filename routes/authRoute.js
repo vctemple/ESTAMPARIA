@@ -1,6 +1,6 @@
 import express from "express";
-import { cadastroController, loginController, testeController} from "../controllers/authController.js";
-import { verificaPerfilGerenteAdmin, verificaPerfilAdmin, verificaTokenLogin } from "../middlewares/authMiddleware.js";
+import { cadastroController, loginController} from "../controllers/authController.js";
+import { verificaTokenLogin } from "../middlewares/authMiddleware.js";
 
 //Cria o roteador http
 const authRouter = express.Router();
@@ -17,8 +17,10 @@ authRouter.get("/auth-login", verificaTokenLogin, (req, res) => {
     res.status(200).send({ ok: true });
 });
 
-//teste
-authRouter.get("/testeAdmin", verificaTokenLogin, verificaPerfilAdmin, testeController);
-authRouter.get("/testeGerenteAdmin", verificaTokenLogin, verificaPerfilGerenteAdmin, testeController);
+// authRouter.get("/auth-adm", verificaTokenLogin, verificaPerfilAdmin, (req, res) => {
+//     res.status(200).send({ ok: true });
+// });
+
+
 
 export default authRouter;
