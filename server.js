@@ -4,6 +4,8 @@ import morgan from "morgan";
 import dbConnection from "./config/database.js";
 import authRouter from "./routes/authRoute.js";
 import cors from "cors";
+import fornecedoresRouter from "./routes/fornecedoresRoute.js";
+import produtosRouter from "./routes/produtosRoute.js";
 
 //Carregamento das variáveis de ambiente
 dotenv.config();
@@ -20,8 +22,14 @@ app.use(express.json());
 app.use(morgan("[:date[web]] ':method :url HTTP/:http-version' :status"));
 
 //ROTAS
-//Autenticação
-app.use("/api/v1/auth", authRouter)
+//Autenticação e Usuários
+app.use("/api/v1/auth", authRouter);
+
+//Fornecedores
+app.use("/api/v1/fornecedores", fornecedoresRouter);
+
+//Produtos
+app.use("/api/v1/produtos", produtosRouter);
 
 //Porta padrão do backend
 const GATE = process.env.GATE;

@@ -97,8 +97,3 @@ export const loginController = async (req, res) => {
         })
     };
 };
-
-//Teste controller
-export const testeController = (req, res) => {
-    res.send("Rota protegida!");
-};

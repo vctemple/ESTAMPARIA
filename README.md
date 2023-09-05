@@ -30,6 +30,9 @@ Start automático do servidor sempre que aconteça uma alteração no código, f
 **cors:**
 middleware de conexão http para autoriação de requisições de outra origem
 
+**express-formidable:**
+middleware de parsing de dados para requisições http. O intuito é manipular arquivos buffer
+
 ## Instruções
 
 Para rodar o projeto, utilizar: `npm run server`

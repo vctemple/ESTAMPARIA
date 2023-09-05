@@ -16,7 +16,6 @@ export const verificaTokenLogin = async (req, res, next) => {
   }
 };
 
-/*
 //Verificação do perfil de acesso Admin
 export const verificaPerfilAdmin = async (req, res, next) => {
   try {
@@ -56,4 +55,4 @@ export const verificaPerfilGerenteAdmin = async (req, res, next) => {
     });
   }
 };
-*/
+
