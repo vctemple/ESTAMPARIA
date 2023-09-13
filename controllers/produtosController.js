@@ -1,7 +1,8 @@
 import produtosModel from "../Models/produtosModel.js";
 import fs from "fs";
 
-export const cadastroController = async (req, res) => {
+//CADASTRO DE PRODUTOS
+export const cadastroProduto = async (req, res) => {
   try {
     const {
       nome,
@@ -80,3 +81,88 @@ export const cadastroController = async (req, res) => {
     });
   }
 };
+
+//LISTAR TODOS OS PRODUTOS
+export const listProduto = async (req, res) => {
+  try {
+    const produtos = await produtosModel
+      .find({})
+      .select("-imgFrente -imgTras -imgCorpo")
+      .limit(12)
+      .sort({ createdAt: -1 });
+    res.status(200).send({
+      success: true,
+      message: "Lista de todos os produtos",
+      total: produtos.length,
+      produtos,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro na listagem",
+      error: e.message,
+    });
+  }
+};
+
+//DETALHAR PRODUTO
+export const detalheProduto = async (req, res) => {
+  try {
+    const produto = await produtosModel
+      .findOne({ nome: req.params.nome.replace(/-/g, " ") })
+      .select("-imgFrente -imgTras -imgCorpo")
+      .populate("fornecedor", "nome");
+    res.status(200).send({
+      success: true,
+      message: "Produto detalhado",
+      produto,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro ao detalhar",
+      error: e.message,
+    });
+  }
+};
+
+//FOTOS DO PRODUTO
+export const fotosProduto = async (req, res) => {
+  try {
+    const produto = await produtosModel.findById(req.params.pid).select("imgFrente imgTras imgCorpo");
+    if(produto.imgFrente.data && produto.imgTras.data && produto.imgCorpo.data){
+      return res.status(200).send({
+        success: true,
+        message: "fotos dos produtos",
+        produto
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro ao carregar fotos",
+      error: e.message,
+    });
+  };
+};
+
+//DELETAR PRODUTO
+export const deletarProduto = async (req, res) => {
+  try {
+    await produtosModel.findByIdAndDelete(req.params.pid);
+    res.status(200).send({
+      success: true,
+      message: "Produto deletado com sucesso!",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro ao deletar produto",
+      error: e.message,
+    });
+  }
+}

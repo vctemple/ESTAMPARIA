@@ -1,7 +1,7 @@
 import fornecedoresModel from "../Models/fornecedoresModel.js";
 
 //ROTINA DE CADASTRO DE FORNECEDOR
-export const cadastroController = async(req, res) => {
+export const cadastroFornecedor = async(req, res) => {
     try{
         const { nome, email, cnpj, telefone, cep, endereco, numEnd, bairro, complementoEnd, cidade, estado } = req.body;
         
