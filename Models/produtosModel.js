@@ -26,7 +26,7 @@ const schemaProdutos = new mongoose.Schema({
     tamanho:{
         type:String,
         require:true,
-        maxLength:1,
+        maxLength:2,
         minLength:1
     },
     cor:{
@@ -52,18 +52,10 @@ const schemaProdutos = new mongoose.Schema({
         require:true,
         maxLength:70
     },
-    imgFrente:{
-        data:Buffer,
-        contentType:String
-    },
-    imgTras:{
-        data:Buffer,
-        contentType:String
-    },
-    imgCorpo:{
-        data:Buffer,
-        contentType:String
-    }
+    imgFrente:String,
+    imgTras:String,
+    imgCorpo:String
+
 }, {timestamps:true});
 
 export default mongoose.model("Produtos", schemaProdutos)

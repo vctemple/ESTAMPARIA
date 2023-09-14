@@ -46,3 +46,25 @@ export const cadastroFornecedor = async(req, res) => {
         });
     }
 };
+
+export const listFornecedores = async (req, res) => {
+    try {
+      const fornecedores = await fornecedoresModel
+        .find({})
+        .select("_id nome")
+        .sort({ createdAt: -1 });
+      res.status(200).send({
+        success: true,
+        message: "Lista de todos os fornecedores",
+        total: fornecedores.length,
+        fornecedores,
+      });
+    } catch (e) {
+      console.log(e);
+      res.status(500).send({
+        success: false,
+        message: "Erro na listagem",
+        error: e.message,
+      });
+    }
+  };
