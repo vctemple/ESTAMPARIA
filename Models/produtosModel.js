@@ -54,7 +54,11 @@ const schemaProdutos = new mongoose.Schema({
     },
     imgFrente:String,
     imgTras:String,
-    imgCorpo:String
+    imgCorpo:String,
+    ativo:{
+        type:Boolean,
+        default:true
+    }
 
 }, {timestamps:true});
 

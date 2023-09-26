@@ -15,7 +15,9 @@ export const cadastroProduto = async (req, res) => {
       custo,
       fornecedor,
       marca,
-      imgFrente
+      imgFrente,
+      imgTras,
+      imgCorpo,
     } = req.body;
 
     //Validações
@@ -30,12 +32,9 @@ export const cadastroProduto = async (req, res) => {
     if (!custo) return res.send({ message: "Custo é obrigatório!" });
     if (!fornecedor) return res.send({ message: "Fornecedor é obrigatório!" });
     if (!marca) return res.send({ message: "Marca é obrigatório!" });
-    if (!imgFrente || imgFrente.size > 1000000)
-      return res.send({ message: "Imagem obrigatória de até 1mb" });
-    // if (!imgTras || imgTras.size > 1000000)
-    //   return res.send({ message: "Imagem obrigatória de até 1mb" });
-    // if (!imgCorpo || imgCorpo.size > 1000000)
-    //   return res.send({ message: "Imagem obrigatória de até 1mb" });
+    if (!imgFrente) return res.send({ message: "Imagem obrigatória" });
+    if (!imgTras) return res.send({ message: "Imagem obrigatória" });
+    if (!imgCorpo) return res.send({ message: "Imagem obrigatória" });
 
     //Checagem de existência de mesmo produto
     const produtoExistente = await produtosModel.findOne({
@@ -54,7 +53,7 @@ export const cadastroProduto = async (req, res) => {
     }
 
     //criação do objeto
-    const produtos =  await new produtosModel({ 
+    const produtos = await new produtosModel({
       nome,
       tecido,
       estampa,
@@ -65,12 +64,14 @@ export const cadastroProduto = async (req, res) => {
       custo,
       fornecedor,
       marca,
-      imgFrente }).save();
+      imgFrente,
+      imgTras,
+      imgCorpo,
+    }).save();
 
     res.status(201).send({
       success: true,
       message: "Produto criado com sucesso!",
-      produtos,
     });
   } catch (e) {
     console.log(e);
@@ -86,8 +87,8 @@ export const listProduto = async (req, res) => {
   try {
     const produtos = await produtosModel
       .find({})
-      .select("-imgTras -imgCorpo").
-      populate("fornecedor", "nome")
+      .select("-imgTras -imgCorpo")
+      .populate("fornecedor", "nome")
       .limit(12)
       .sort({ createdAt: -1 });
     res.status(200).send({
@@ -110,8 +111,7 @@ export const listProduto = async (req, res) => {
 export const detalheProduto = async (req, res) => {
   try {
     const produto = await produtosModel
-      .findOne({ nome: req.params.nome.replace(/-/g, " ") })
-      .select("-imgFrente -imgTras -imgCorpo")
+      .findById(req.params.pid)
       .populate("fornecedor", "nome");
     res.status(200).send({
       success: true,
@@ -131,12 +131,18 @@ export const detalheProduto = async (req, res) => {
 //FOTOS DO PRODUTO
 export const fotosProduto = async (req, res) => {
   try {
-    const produto = await produtosModel.findById(req.params.pid).select("imgFrente imgTras imgCorpo");
-    if(produto.imgFrente.data && produto.imgTras.data && produto.imgCorpo.data){
+    const produto = await produtosModel
+      .findById(req.params.pid)
+      .select("imgFrente imgTras imgCorpo");
+    if (
+      produto.imgFrente.data &&
+      produto.imgTras.data &&
+      produto.imgCorpo.data
+    ) {
       return res.status(200).send({
         success: true,
         message: "fotos dos produtos",
-        produto
+        produto,
       });
     }
   } catch (e) {
@@ -146,7 +152,7 @@ export const fotosProduto = async (req, res) => {
       message: "Erro ao carregar fotos",
       error: e.message,
     });
-  };
+  }
 };
 
 //DELETAR PRODUTO
@@ -164,7 +170,7 @@ export const deletarProduto = async (req, res) => {
       message: "Erro ao deletar produto",
       error: e.message,
     });
-  };
+  }
 };
 
 //EDITAR PRODUTO
@@ -181,47 +187,95 @@ export const editarProduto = async (req, res) => {
       custo,
       fornecedor,
       marca,
-    } = req.fields;
-    const { imgFrente, imgTras, imgCorpo } = req.files;
+      imgFrente,
+      imgTras,
+      imgCorpo,
+    } = req.body;
 
     //Validações
     //complementar com mais validações!
     if (!nome) return res.send({ message: "Nome é obrigatório!" });
-    if (!tecido) return res.send({ message: "E-mail é obrigatório!" });
-    if (!estampa) return res.send({ message: "CPF é obrigatório!" });
-    if (!quantidade) return res.send({ message: "Telefone é obrigatório!" });
-    if (!tamanho) return res.send({ message: "CEP é obrigatório!" });
-    if (!cor) return res.send({ message: "Endereço é obrigatório!" });
-    if (!preco) return res.send({ message: "Número é obrigatório!" });
-    if (!custo) return res.send({ message: "Bairro é obrigatório!" });
-    if (!fornecedor) return res.send({ message: "Cidade é obrigatório!" });
-    if (!marca) return res.send({ message: "Estado é obrigatório!" });
-    if (!imgFrente || imgFrente.size > 1000000)
-      return res.send({ message: "Imagem obrigatória de até 1mb" });
-    if (!imgTras || imgTras.size > 1000000)
-      return res.send({ message: "Imagem obrigatória de até 1mb" });
-    if (!imgCorpo || imgCorpo.size > 1000000)
-      return res.send({ message: "Imagem obrigatória de até 1mb" });
+    if (!tecido) return res.send({ message: "Tecido é obrigatório!" });
+    if (!estampa) return res.send({ message: "Estampa é obrigatório!" });
+    if (!quantidade) return res.send({ message: "Quantidade é obrigatório!" });
+    if (!tamanho) return res.send({ message: "Tamanho é obrigatório!" });
+    if (!cor) return res.send({ message: "Cor é obrigatório!" });
+    if (!preco) return res.send({ message: "Preço é obrigatório!" });
+    if (!custo) return res.send({ message: "Custo é obrigatório!" });
+    if (!fornecedor) return res.send({ message: "Fornecedor é obrigatório!" });
+    if (!marca) return res.send({ message: "Marca é obrigatório!" });
+    if (!imgFrente) return res.send({ message: "Imagem obrigatória" });
+    if (!imgTras) return res.send({ message: "Imagem obrigatória" });
+    if (!imgCorpo) return res.send({ message: "Imagem obrigatória" });
 
+    if (!nome) return res.send({ message: "Nome é obrigatório!" });
+    if (!tecido) return res.send({ message: "Tecido é obrigatório!" });
+    if (!estampa) return res.send({ message: "Estampa é obrigatório!" });
+    if (!quantidade) return res.send({ message: "Quantidade é obrigatório!" });
+    if (!tamanho) return res.send({ message: "Tamanho é obrigatório!" });
+    if (!cor) return res.send({ message: "Cor é obrigatório!" });
+    if (!preco) return res.send({ message: "Preço é obrigatório!" });
+    if (!custo) return res.send({ message: "Custo é obrigatório!" });
+    if (!fornecedor) return res.send({ message: "Fornecedor é obrigatório!" });
+    if (!marca) return res.send({ message: "Marca é obrigatório!" });
+    if (!imgFrente) return res.send({ message: "Imagem obrigatória" });
+    if (!imgTras) return res.send({ message: "Imagem obrigatória" });
+    if (!imgCorpo) return res.send({ message: "Imagem obrigatória" });
+
+    //Checagem de existência de mesmo produto
+    const produtoExistente = await produtosModel.findOne({
+      nome,
+      tecido,
+      estampa,
+      tamanho,
+      cor,
+      marca,
+    });
+    if (produtoExistente) {
+      return res.status(200).send({
+        success: false,
+        message: "produto já cadastrado!",
+      });
+    }
+    
     //criação do objeto
-    const produtos = await produtosModel.findByIdAndUpdate(req.params.pid, {...req.fields}, {new:true});
+    const produtos = await produtosModel.findByIdAndUpdate(
+      req.params.pid,
+      { ...req.body },
+      { new: true }
+    );
 
-    //captura dos caminhos das imagens
-    produtos.imgFrente.data = fs.readFileSync(imgFrente.path);
-    produtos.imgFrente.contentType = imgFrente.type;
-
-    produtos.imgTras.data = fs.readFileSync(imgTras.path);
-    produtos.imgTras.contentType = imgTras.type;
-
-    produtos.imgCorpo.data = fs.readFileSync(imgCorpo.path);
-    produtos.imgCorpo.contentType = imgCorpo.type;
-
-    //registro no banco
+     //registro no banco
     await produtos.save();
     res.status(201).send({
       success: true,
       message: "Produto editado com sucesso!",
       produtos,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro ao editar",
+    });
+  }
+};
+
+
+export const ativacaoProduto = async (req, res) => {
+  try {
+    const statusProduto = req.body.ativo ? false : true;
+    const produtos = await produtosModel.findByIdAndUpdate(
+      req.params.pid,
+      { ativo: statusProduto },
+      { new: true }
+    );
+
+    //registro no banco
+    await produtos.save();
+    res.status(201).send({
+      success: true,
+      message: "Produto desativado!",
     });
   } catch (e) {
     console.log(e);

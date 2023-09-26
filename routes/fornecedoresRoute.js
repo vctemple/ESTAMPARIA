@@ -7,7 +7,7 @@ const fornecedoresRouter = express.Router();
 
 //ROTAS
 //Cadastro de fornecedor
-fornecedoresRouter.post("/cadastro", verificaTokenLogin, cadastroFornecedor);
+fornecedoresRouter.post("/cadastro", cadastroFornecedor);
 
 //Listar fornecedores
 fornecedoresRouter.get("/", listFornecedores);

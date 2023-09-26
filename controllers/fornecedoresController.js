@@ -36,7 +36,6 @@ export const cadastroFornecedor = async(req, res) => {
         res.status(201).send({
             success:true,
             message:"Fornecedor criado com sucesso!",
-            fornecedorNovo //checar a relevância posteriormente!
         })
     } catch(e){
         console.log(e);
@@ -51,7 +50,6 @@ export const listFornecedores = async (req, res) => {
     try {
       const fornecedores = await fornecedoresModel
         .find({})
-        .select("_id nome")
         .sort({ createdAt: -1 });
       res.status(200).send({
         success: true,

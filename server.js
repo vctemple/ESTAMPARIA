@@ -18,7 +18,7 @@ const app = express();
 
 //Carregamento dos middleware necessários para realizar as requisições HTTP
 app.use(cors()); //desta forma o cors autoria qualquer origem de requisição
-app.use(express.json());
+app.use(express.json({limit: "10mb"}));
 app.use(morgan("[:date[web]] ':method :url HTTP/:http-version' :status"));
 
 //ROTAS
