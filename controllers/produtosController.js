@@ -208,36 +208,6 @@ export const editarProduto = async (req, res) => {
     if (!imgTras) return res.send({ message: "Imagem obrigatória" });
     if (!imgCorpo) return res.send({ message: "Imagem obrigatória" });
 
-    if (!nome) return res.send({ message: "Nome é obrigatório!" });
-    if (!tecido) return res.send({ message: "Tecido é obrigatório!" });
-    if (!estampa) return res.send({ message: "Estampa é obrigatório!" });
-    if (!quantidade) return res.send({ message: "Quantidade é obrigatório!" });
-    if (!tamanho) return res.send({ message: "Tamanho é obrigatório!" });
-    if (!cor) return res.send({ message: "Cor é obrigatório!" });
-    if (!preco) return res.send({ message: "Preço é obrigatório!" });
-    if (!custo) return res.send({ message: "Custo é obrigatório!" });
-    if (!fornecedor) return res.send({ message: "Fornecedor é obrigatório!" });
-    if (!marca) return res.send({ message: "Marca é obrigatório!" });
-    if (!imgFrente) return res.send({ message: "Imagem obrigatória" });
-    if (!imgTras) return res.send({ message: "Imagem obrigatória" });
-    if (!imgCorpo) return res.send({ message: "Imagem obrigatória" });
-
-    //Checagem de existência de mesmo produto
-    const produtoExistente = await produtosModel.findOne({
-      nome,
-      tecido,
-      estampa,
-      tamanho,
-      cor,
-      marca,
-    });
-    if (produtoExistente) {
-      return res.status(200).send({
-        success: false,
-        message: "produto já cadastrado!",
-      });
-    }
-    
     //criação do objeto
     const produtos = await produtosModel.findByIdAndUpdate(
       req.params.pid,

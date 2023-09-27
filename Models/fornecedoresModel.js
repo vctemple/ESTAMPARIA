@@ -64,6 +64,10 @@ const schemaFornecedores = new mongoose.Schema({
         required:true,
         maxLength:2,
         minLength:2
+    },
+    ativo:{
+        type:Boolean,
+        default:true
     }
 }, {timestamps:true});
 
