@@ -76,7 +76,16 @@ const schemaUsuarios = new mongoose.Schema({
     },
     perfil:{
         type:Number  
-    }
+    },
+    ativo:{
+        type:Boolean,
+        default:true
+    },
+    deletado:{
+        type:Boolean,
+        default:false
+    },
+    imagem:String,
 }, {timestamps:true});
 
 export default mongoose.model("Usuarios", schemaUsuarios);

@@ -176,8 +176,7 @@ export const deletarFornecedor = async (req, res) => {
     await fornecedor.save();
     res.status(201).send({
       success: true,
-      message: "Fornecedor editado!",
-      fornecedor,
+      message: "Fornecedor deletado!",
     });
   } catch (e) {
     console.log(e);

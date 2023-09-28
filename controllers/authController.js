@@ -62,12 +62,18 @@ export const loginController = async (req, res) => {
         if(!email) return res.send({message: "E-mail é obrigatório!"});
         if(!senha) return res.send({message: "Senha é obrigatório!"});
 
-        //Checagem de existência de usuário
+        //Checagem de existência de usuário e conta existente
         const usuario = await usuariosModel.findOne({email});   
         if(!usuario){
             return res.status(404).send({
                 success:false,
                 message:"Email não encontrado!"
+            });
+        }
+        if (usuario.deletado || !usuario.ativo){
+            return res.status(404).send({
+                success:false,
+                message:"Conta deletada ou inativa!"
             });
         }
 
@@ -97,3 +103,73 @@ export const loginController = async (req, res) => {
         })
     };
 };
+
+export const listarUsuarios = async (req, res) => {
+    try {
+      const usuarios = await usuariosModel
+        .find({ deletado: false})
+        .sort({ createdAt: -1 });
+      res.status(200).send({
+        success: true,
+        message: "Lista de usuários",
+        total: usuarios.length,
+        usuarios,
+      });
+    } catch (e) {
+      console.log(e);
+      res.status(500).send({
+        success: false,
+        message: "Erro na listagem",
+        error: e.message,
+      });
+    }
+  };
+
+  export const ativacaoUsuario = async (req, res) => {
+    try {
+      const statusUsuario = req.body.ativo ? false : true;
+      const usuario = await usuariosModel.findByIdAndUpdate(
+        req.params.pid,
+        { ativo: statusUsuario },
+        { new: true }
+      );
+  
+      //registro no banco
+      await usuario.save();
+      res.status(201).send({
+        success: true,
+        message: "Alterado com sucesso!",
+      });
+    } catch (e) {
+      console.log(e);
+      res.status(500).send({
+        success: false,
+        message: "Erro ao editar",
+      });
+    }
+  };
+
+//DELETAR USUÁRIO
+//São sobreescritas as informações de cadastro do usuário e o mesmo desativado do sistema
+export const deletarUsuario = async (req, res) => {
+    try {
+      const usuario = await usuariosModel.findByIdAndUpdate(
+        req.params.pid, //Email e Cpf por serem indexados e senha por questão de segurança recebem a data atual em milissegundos para não haver conflito
+        { nome: null, email:Date.now(), cpf:Date.now(), dataNascimento: null, telefone:null, senha: Date.now(), cep:null, endereco:null, numEnd:null, bairro:null, complementoEnd:null, cidade:null, estado:null, ativo:false, deletado: true },
+        { new: true }
+      );
+  
+      //registro no banco
+      await usuario.save();
+      res.status(201).send({
+        success: true,
+        message: "Usuário deletado!",
+      });
+    } catch (e) {
+      console.log(e);
+      res.status(500).send({
+        success: false,
+        message: "Erro ao editar",
+      });
+    }
+  };
