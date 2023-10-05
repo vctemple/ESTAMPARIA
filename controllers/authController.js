@@ -173,3 +173,22 @@ export const deletarUsuario = async (req, res) => {
       });
     }
   };
+
+  //DETALHAR USUARIO
+export const detalheUsuario = async (req, res) => {
+  try {
+    const usuario = await usuariosModel.findById(req.params.pid);
+    res.status(200).send({
+      success: true,
+      message: "Usuário detalhado",
+      usuario,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro ao detalhar",
+      error: e.message,
+    });
+  }
+};

@@ -1,0 +1,2 @@
+- Aperfeiçoar validações de cadastros;
+- Checar JWT e Perfil de usuário em acessos restritos no backend;
