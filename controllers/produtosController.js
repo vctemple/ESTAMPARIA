@@ -255,3 +255,32 @@ export const ativacaoProduto = async (req, res) => {
     });
   }
 };
+
+export const filtraProdutos = async (req, res) => {
+  try {
+    const { tam, cor, precoMin, precoMax } = req.body;
+    console.log(precoMin, precoMax)
+    let args = {};
+    if (tam.length > 0) args.tamanho = tam;
+    if (cor.length > 0) args.cor = cor;
+    if (precoMin && precoMax){
+      args.preco = {$gte: precoMin, $lte: precoMax };
+    } else if (precoMin && !precoMax){
+      args.preco = {$gte: precoMin };
+    } else if (precoMax && !precoMin) {
+      args.preco = {$lte: precoMax };
+    }
+    const produtos = await produtosModel.find(args);
+    res.status(200).send({
+      sucess: true,
+      produtos
+    })
+  } catch (e) {
+    console.log(e);
+    res.status(400).send({
+      success: false,
+      message: "Erro ao filtrar",
+      e
+    });
+  }
+}

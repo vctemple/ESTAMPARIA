@@ -1,6 +1,6 @@
 import express from "express";
 import { verificaTokenLogin } from "../middlewares/authMiddleware.js";
-import { cadastroProduto, listProduto, detalheProduto, fotosProduto, deletarProduto, editarProduto, ativacaoProduto } from "../controllers/produtosController.js";
+import { cadastroProduto, listProduto, detalheProduto, fotosProduto, deletarProduto, editarProduto, ativacaoProduto, filtraProdutos } from "../controllers/produtosController.js";
 import formidable from "express-formidable";
 
 //Cria o roteador http
@@ -22,8 +22,12 @@ produtosRouter.get("/fotos/:pid", fotosProduto);
 //Deleta produto especificado
 produtosRouter.delete("/:pid", verificaTokenLogin, deletarProduto);
 
+//Edição de produto
 produtosRouter.put("/:pid", editarProduto);
 produtosRouter.put("/ativacao/:pid", ativacaoProduto);
+
+//Filtrar produtos na home
+produtosRouter.post("/filtro", filtraProdutos);
 
 //Adicionar middleware de autenticação de perfil
 
