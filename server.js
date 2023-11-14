@@ -6,6 +6,7 @@ import authRouter from "./routes/authRoute.js";
 import cors from "cors";
 import fornecedoresRouter from "./routes/fornecedoresRoute.js";
 import produtosRouter from "./routes/produtosRoute.js";
+import pedidosRouter from "./routes/pedidosRoute.js"
 
 //Carregamento das variáveis de ambiente
 dotenv.config();
@@ -30,6 +31,9 @@ app.use("/api/v1/fornecedores", fornecedoresRouter);
 
 //Produtos
 app.use("/api/v1/produtos", produtosRouter);
+
+//Pedidos
+app.use("/api/v1/pedidos", pedidosRouter);
 
 //Porta padrão do backend
 const GATE = process.env.GATE;
