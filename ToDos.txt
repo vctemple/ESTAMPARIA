@@ -1,2 +1,5 @@
 - Aperfeiçoar validações de cadastros;
 - Checar JWT e Perfil de usuário em acessos restritos no backend;
+- Implementar o back do CRUD do banner;
+- Implementar o back de recuperação de senha;
+- implementar o back para gestão de pedidos;

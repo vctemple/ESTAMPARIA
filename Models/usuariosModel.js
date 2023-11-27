@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const schemaUsuarios = new mongoose.Schema({
     nome:{
         type:String,
-        required:true,
         trim:true,
         maxLength:70
     },
@@ -21,11 +20,9 @@ const schemaUsuarios = new mongoose.Schema({
     },
     dataNascimento:{
         type:Date,
-        required:true
     },
     telefone:{
         type:String,
-        required:true,
         trim:true,
         maxLength:20
     },
@@ -36,24 +33,20 @@ const schemaUsuarios = new mongoose.Schema({
     },
     cep:{
         type:String,
-        required:true,
         maxLength:9
     },
     endereco:{
         type:String,
-        required:true,
         trim:true,
         maxLength:70
     },
     numEnd:{
         type:String,
-        required:true,
         trim:true,
         maxLength:9
     },
     bairro:{
         type:String,
-        required:true,
         trim:true,
         maxLength:70
     },
@@ -64,13 +57,11 @@ const schemaUsuarios = new mongoose.Schema({
     },
     cidade:{
         type:String,
-        required:true,
         trim:true,
         maxLength:70
     },
     estado:{
         type:String,
-        required:true,
         maxLength:2,
         minLength:2
     },

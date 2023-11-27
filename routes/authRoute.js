@@ -1,5 +1,14 @@
 import express from "express";
-import { cadastroController, loginController, listarUsuarios, ativacaoUsuario, deletarUsuario, detalheUsuario, editarDadosUsuario} from "../controllers/authController.js";
+import {
+  cadastroController,
+  loginController,
+  listarUsuarios,
+  ativacaoUsuario,
+  deletarUsuario,
+  detalheUsuario,
+  editarDadosUsuario,
+  editarSenha
+} from "../controllers/authController.js";
 import { verificaTokenLogin } from "../middlewares/authMiddleware.js";
 
 //Cria o roteador http
@@ -14,7 +23,7 @@ authRouter.post("/login", loginController);
 
 //Autenticação de login
 authRouter.get("/auth-login", verificaTokenLogin, (req, res) => {
-    res.status(200).send({ ok: true });
+  res.status(200).send({ ok: true });
 });
 
 authRouter.get("/usuarios", listarUsuarios);
@@ -27,10 +36,10 @@ authRouter.get("/detalhe/:pid", detalheUsuario);
 
 authRouter.put("/editarDados/:pid", editarDadosUsuario);
 
+authRouter.put("/editarSenha/:pid", editarSenha);
+
 // authRouter.get("/auth-adm", verificaTokenLogin, verificaPerfilAdmin, (req, res) => {
 //     res.status(200).send({ ok: true });
 // });
-
-
 
 export default authRouter;

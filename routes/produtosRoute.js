@@ -1,6 +1,16 @@
 import express from "express";
 import { verificaTokenLogin } from "../middlewares/authMiddleware.js";
-import { cadastroProduto, listProduto, detalheProduto, fotosProduto, deletarProduto, editarProduto, ativacaoProduto, filtraProdutos } from "../controllers/produtosController.js";
+import {
+  cadastroProduto,
+  listProduto,
+  listProdutoAtivo,
+  detalheProduto,
+  fotosProduto,
+  deletarProduto,
+  editarProduto,
+  ativacaoProduto,
+  filtraProdutos,
+} from "../controllers/produtosController.js";
 import formidable from "express-formidable";
 
 //Cria o roteador http
@@ -12,6 +22,8 @@ produtosRouter.post("/", cadastroProduto);
 
 //Retorna lista de produtos
 produtosRouter.get("/", listProduto);
+
+produtosRouter.get("/ativo", listProdutoAtivo);
 
 //Retorna o produto detalhado
 produtosRouter.get("/dados/:pid", detalheProduto);

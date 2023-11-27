@@ -205,6 +205,7 @@ export const deletarUsuario = async (req, res) => {
         estado: null,
         ativo: false,
         deletado: true,
+        imagem: null,
       },
       { new: true }
     );
@@ -296,6 +297,45 @@ export const editarDadosUsuario = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Erro ao editar",
+    });
+  }
+};
+
+export const editarSenha = async (req, res) => {
+  try {
+    const usuario = await usuariosModel.findById(req.params.pid)
+    
+    const {
+      senhaAntiga,
+      senhaNova
+    } = req.body;
+
+    //Validações
+    //complementar com mais validações!
+    if (!senhaAntiga) return res.send({ message: "Senha Antiga é obrigatório" });
+    if (!senhaNova) return res.send({ message: "Nova senha é obrigatório!" });
+ 
+    const matchSenha = await compararSenha(senhaAntiga, usuario.senha);
+    if (!matchSenha) {
+      return res.status(200).send({
+        success: false,
+        message: "Senha inválida!",
+      });
+    }
+
+    const cryptSenha = await hashSenha(senhaNova);
+    usuario.senha = cryptSenha;
+    await usuario.save();
+    res.status(201).send({
+      success: true,
+      message: "Senha alterada com sucesso!",
+      usuario,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro ao alterar senha",
     });
   }
 };

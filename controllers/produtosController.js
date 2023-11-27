@@ -89,7 +89,6 @@ export const listProduto = async (req, res) => {
       .find({})
       .select("-imgTras -imgCorpo")
       .populate("fornecedor", "nome")
-      .limit(12)
       .sort({ createdAt: -1 });
     res.status(200).send({
       success: true,
@@ -284,3 +283,27 @@ export const filtraProdutos = async (req, res) => {
     });
   }
 }
+
+//LISTAR TODOS OS PRODUTOS
+export const listProdutoAtivo = async (req, res) => {
+  try {
+    const produtos = await produtosModel
+      .find({ativo: true})
+      .select("-imgTras -imgCorpo")
+      .populate("fornecedor", "nome")
+      .sort({ createdAt: -1 });
+    res.status(200).send({
+      success: true,
+      message: "Lista de todos os produtos",
+      total: produtos.length,
+      produtos,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro na listagem",
+      error: e.message,
+    });
+  }
+};
