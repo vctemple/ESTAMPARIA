@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 const schemaPedidos = new mongoose.Schema(
   {
     status: {
-      type: Number,
-      required: true,
+      type: String,
+      default: "PENDENTE",
     },
     tipoPgto: {
-      type: Number,
-      required: true,
+      type: String,
+      default: "CARTAO_CRED",
     },
     usuario: {
       type: mongoose.ObjectId,
@@ -17,16 +17,47 @@ const schemaPedidos = new mongoose.Schema(
     },
     carrinho: [
       {
-        produto: {
+        anuncio: {
           type: mongoose.ObjectId,
-          ref: "Produtos",
+          ref: "Anuncios",
         },
+        skusItem: [{
+          type: String,
+        }],
         qtd: Number,
+        estampaPersnFrente: String,
+        estampaPersnTras: String,
+        posicaoEstampaTras: Number,
       },
     ],
-    total: {
+    totalCarrinho: {
       type: Number,
       require: true,
+    },
+    fretePreco: {
+      type: Number,
+      require: true,
+    },
+    freteEmpresa: {
+      type: String,
+      trim: true,
+      require: true,
+    },
+    freteServico: {
+      type: String,
+      trim: true,
+      require: true,
+    },
+    totalPedido: {
+      type: Number,
+      require: true,
+    },
+    entradaPgtoLiq: {
+      type: Number,
+    },
+    urlPagamento: {
+      type: String,
+      default: null,
     },
   },
   { timestamps: true }

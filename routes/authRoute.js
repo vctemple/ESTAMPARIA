@@ -7,7 +7,8 @@ import {
   deletarUsuario,
   detalheUsuario,
   editarDadosUsuario,
-  editarSenha
+  editarSenha,
+  listarClientes
 } from "../controllers/authController.js";
 import { verificaTokenLogin } from "../middlewares/authMiddleware.js";
 
@@ -27,6 +28,8 @@ authRouter.get("/auth-login", verificaTokenLogin, (req, res) => {
 });
 
 authRouter.get("/usuarios", listarUsuarios);
+
+authRouter.get("/clientes", listarClientes);
 
 authRouter.put("/ativacao/:pid", ativacaoUsuario);
 

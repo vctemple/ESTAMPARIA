@@ -6,7 +6,11 @@ import authRouter from "./routes/authRoute.js";
 import cors from "cors";
 import fornecedoresRouter from "./routes/fornecedoresRoute.js";
 import produtosRouter from "./routes/produtosRoute.js";
-import pedidosRouter from "./routes/pedidosRoute.js"
+import pedidosRouter from "./routes/pedidosRoute.js";
+import anunciosRouter from "./routes/anunciosRoute.js";
+import financasRouter from "./routes/financasRoute.js";
+import camisetaRouter from "./routes/camisetaRoute.js";
+import bannerRouter from "./routes/bannerRoute.js";
 
 //Carregamento das variáveis de ambiente
 dotenv.config();
@@ -34,6 +38,18 @@ app.use("/api/v1/produtos", produtosRouter);
 
 //Pedidos
 app.use("/api/v1/pedidos", pedidosRouter);
+
+//Anuncios
+app.use("/api/v1/anuncios", anunciosRouter);
+
+//Financas
+app.use("/api/v1/financas", financasRouter);
+
+//Camisetas personalizadas
+app.use("/api/v1/camisetas", camisetaRouter);
+
+//Camisetas personalizadas
+app.use("/api/v1/banner", bannerRouter);
 
 //Porta padrão do backend
 const GATE = process.env.GATE;

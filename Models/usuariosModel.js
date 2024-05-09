@@ -76,6 +76,10 @@ const schemaUsuarios = new mongoose.Schema({
         type:Boolean,
         default:false
     },
+    customer:{
+        type: String,
+        trim: true,
+    },
     imagem:String,
 }, {timestamps:true});
 

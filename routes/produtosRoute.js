@@ -1,15 +1,20 @@
 import express from "express";
 import { verificaTokenLogin } from "../middlewares/authMiddleware.js";
 import {
-  cadastroProduto,
+  cadastroSKU,
   listProduto,
   listProdutoAtivo,
-  detalheProduto,
+  detalheSKU,
+  detalheEstampa,
   fotosProduto,
   deletarProduto,
-  editarProduto,
-  ativacaoProduto,
+  editarSKU,
+  ativacaoSKU,
+  ativacaoEstampa,
   filtraProdutos,
+  cadastroEstampa,
+  listaEstampa,
+  editarEstampa,
 } from "../controllers/produtosController.js";
 import formidable from "express-formidable";
 
@@ -18,15 +23,20 @@ const produtosRouter = express.Router();
 
 //ROTAS
 //Cadastro de produto com parsing de dados
-produtosRouter.post("/", cadastroProduto);
+produtosRouter.put("/cadastroSKU/:pid", cadastroSKU);
+produtosRouter.post("/cadastroEstampa", cadastroEstampa);
 
 //Retorna lista de produtos
 produtosRouter.get("/", listProduto);
 
+produtosRouter.get("/listaEstampa", listaEstampa);
+
 produtosRouter.get("/ativo", listProdutoAtivo);
 
 //Retorna o produto detalhado
-produtosRouter.get("/dados/:pid", detalheProduto);
+produtosRouter.get("/dados/sku/:pid", detalheSKU);
+
+produtosRouter.get("/dados/estampa/:pid", detalheEstampa);
 
 //Retorna as fotos do produto especificado
 produtosRouter.get("/fotos/:pid", fotosProduto);
@@ -35,8 +45,10 @@ produtosRouter.get("/fotos/:pid", fotosProduto);
 produtosRouter.delete("/:pid", verificaTokenLogin, deletarProduto);
 
 //Edição de produto
-produtosRouter.put("/:pid", editarProduto);
-produtosRouter.put("/ativacao/:pid", ativacaoProduto);
+produtosRouter.put("/editarSKU/:pid", editarSKU);
+produtosRouter.put("/ativacaoSKU/:sku", ativacaoSKU);
+produtosRouter.put("/ativacaoEstampa/:pid", ativacaoEstampa);
+produtosRouter.put("/editarEstampa/:pid", editarEstampa);
 
 //Filtrar produtos na home
 produtosRouter.post("/filtro", filtraProdutos);

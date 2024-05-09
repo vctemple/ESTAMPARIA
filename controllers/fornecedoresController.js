@@ -94,6 +94,7 @@ export const listFornecedores = async (req, res) => {
 export const detalheFornecedor = async (req, res) => {
   try {
     const fornecedor = await fornecedoresModel.findById(req.params.pid);
+    console.log(fornecedor.nome)
     res.status(200).send({
       success: true,
       message: "Fornecedor detalhado",

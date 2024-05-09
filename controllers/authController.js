@@ -1,6 +1,8 @@
+import e from "express";
 import usuariosModel from "../Models/usuariosModel.js";
-import { hashSenha, compararSenha } from "../helpers/authHelper.js";
+import { hashSenha, compararSenha, testaCPF, somenteNumeros } from "../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
+import fetch from "node-fetch";
 
 //ROTINA DE CADASTRO
 export const cadastroController = async (req, res) => {
@@ -26,7 +28,7 @@ export const cadastroController = async (req, res) => {
     //complementar com mais validações!
     if (!nome) return res.send({ message: "Nome é obrigatório!" });
     if (!email) return res.send({ message: "E-mail é obrigatório!" });
-    if (!cpf) return res.send({ message: "CPF é obrigatório!" });
+    if (!cpf) return res.send({ message: "CPF é obrigatório!" });    
     if (!dataNascimento)
       return res.send({ message: "Data de nascimento é obrigatório!" });
     if (!telefone) return res.send({ message: "Telefone é obrigatório!" });
@@ -37,9 +39,14 @@ export const cadastroController = async (req, res) => {
     if (!bairro) return res.send({ message: "Bairro é obrigatório!" });
     if (!cidade) return res.send({ message: "Cidade é obrigatório!" });
     if (!estado) return res.send({ message: "Estado é obrigatório!" });
+    
+    let newCpf = somenteNumeros(cpf);
+    if (newCpf){
+      if(!testaCPF(newCpf)) return res.send({ message: "CPF inválido!" })
+    }else return res.send({ message: "CPF inválido!" })
 
     //Checagem de existência de usuário
-    const cpfExistente = await usuariosModel.findOne({ cpf });
+    const cpfExistente = await usuariosModel.findOne({ cpf: newCpf });
     const emailExistente = await usuariosModel.findOne({ email });
     if (cpfExistente || emailExistente) {
       return res.status(200).send({
@@ -51,11 +58,39 @@ export const cadastroController = async (req, res) => {
     //Criptografia da senha
     const cryptSenha = await hashSenha(senha);
 
+    const url = "https://sandbox.asaas.com/api/v3/customers";
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        access_token: `$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwNzczNzc6OiRhYWNoX2VjNmZkZDY1LWU0YWYtNGEwYS1iNmE0LTkyMjNjMWY1NjUzOA==`,
+      },
+      body: JSON.stringify({
+        name: nome,
+        email: email,
+        mobilePhone: telefone,
+        cpfCnpj: newCpf,
+        postalCode: cep,
+        address: endereco,
+        addressNumber: numEnd,
+        complement: complementoEnd,
+        province: bairro,
+      }),
+    };
+    let customerID;
+    if(perfil===0){
+      let customer = await fetch(url, options)
+      customer = await customer.json();
+      customerID = customer.id
+    } else customerID = null
+  
+
     //Registro no banco
     const usuarioNovo = await new usuariosModel({
       nome,
       email,
-      cpf,
+      cpf: newCpf,
       dataNascimento,
       telefone,
       senha: cryptSenha,
@@ -67,6 +102,7 @@ export const cadastroController = async (req, res) => {
       cidade,
       estado,
       perfil,
+      customer: customerID,
     }).save();
 
     res.status(201).send({
@@ -141,7 +177,28 @@ export const loginController = async (req, res) => {
 export const listarUsuarios = async (req, res) => {
   try {
     const usuarios = await usuariosModel
-      .find({ deletado: false })
+      .find({ deletado: false, perfil: {$ne: 0} })
+      .sort({ createdAt: -1 });
+    res.status(200).send({
+      success: true,
+      message: "Lista de usuários",
+      total: usuarios.length,
+      usuarios,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro na listagem",
+      error: e.message,
+    });
+  }
+};
+
+export const listarClientes = async (req, res) => {
+  try {
+    const usuarios = await usuariosModel
+      .find({ deletado: false, perfil: 0 })
       .sort({ createdAt: -1 });
     res.status(200).send({
       success: true,
@@ -278,10 +335,27 @@ export const editarDadosUsuario = async (req, res) => {
     if (!cidade) return res.send({ message: "Cidade é obrigatório!" });
     if (!estado) return res.send({ message: "Estado é obrigatório!" });
 
+    let newCpf = somenteNumeros(cpf);
+    if (newCpf){
+      if(!testaCPF(newCpf)) return res.send({ message: "CPF inválido!" })
+    }else return res.send({ message: "CPF inválido!" })
+
     //criação do objeto
     const usuario = await usuariosModel.findByIdAndUpdate(
       req.params.pid,
-      { ...req.body },
+      { nome,
+        email,
+        cpf: newCpf,
+        dataNascimento,
+        telefone,
+        cep,
+        endereco,
+        numEnd,
+        bairro,
+        complementoEnd,
+        cidade,
+        estado,
+        imagem,},
       { new: true }
     );
 
@@ -303,18 +377,16 @@ export const editarDadosUsuario = async (req, res) => {
 
 export const editarSenha = async (req, res) => {
   try {
-    const usuario = await usuariosModel.findById(req.params.pid)
-    
-    const {
-      senhaAntiga,
-      senhaNova
-    } = req.body;
+    const usuario = await usuariosModel.findById(req.params.pid);
+
+    const { senhaAntiga, senhaNova } = req.body;
 
     //Validações
     //complementar com mais validações!
-    if (!senhaAntiga) return res.send({ message: "Senha Antiga é obrigatório" });
+    if (!senhaAntiga)
+      return res.send({ message: "Senha Antiga é obrigatório" });
     if (!senhaNova) return res.send({ message: "Nova senha é obrigatório!" });
- 
+
     const matchSenha = await compararSenha(senhaAntiga, usuario.senha);
     if (!matchSenha) {
       return res.status(200).send({
