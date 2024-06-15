@@ -9,7 +9,7 @@ pedidosRouter.post("/frete", getFrete);
 
 pedidosRouter.post("/finalizarPagamento", finalizarPagamento);
 
-pedidosRouter.get("/detalhePedido/:pid", detalhePedido);
+pedidosRouter.get("/detalhe/:pid", detalhePedido);
 pedidosRouter.get("/pedidoUsuario/:pid", listPedidosDeUsuario);
 pedidosRouter.post("/pedidosFinalizados", listPedidosFinalizados);
 pedidosRouter.post("/todosPedidos", listTodosPedidos);

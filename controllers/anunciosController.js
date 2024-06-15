@@ -107,8 +107,8 @@ export const listaAnuncioProduto = async (req, res) => {
 
         for (let j = 0; j < estampas[i].skusFiltrados.length; j++) {
           if (estampas[i].skusFiltrados[j].ativo_sku === true) {
-            const anuncio = await anunciosModel.find({
-              SKUs_anuncio: { $all: [estampas[i].skusFiltrados[j].sku] },
+            const anuncio = await anunciosModel.find({$and: [{
+              SKUs_anuncio: { $all: [estampas[i].skusFiltrados[j].sku] }}, {ativo_anuncio: true}],
             });
             let precoFinalAnuncio = 0;
 
@@ -258,11 +258,12 @@ export const listaAnuncioProdutoComId = async (req, res) => {
       const thisPid = estampas[i]._id.toString();
       if (thisPid === pid) {
         for (let j = 0; j < estampas[i].skusFiltrados.length; j++) {
-          const anuncioFind = await anunciosModel.findOne({
-            SKUs_anuncio: { $all: [estampas[i].skusFiltrados[j].sku] },
+          const anuncioFind = await anunciosModel.findOne({ $and: [{
+            SKUs_anuncio: { $all: [estampas[i].skusFiltrados[j].sku] }}, {ativo_anuncio: true}]
           });
 
-          let precoFinalAnuncio;
+          if(anuncioFind){
+            let precoFinalAnuncio;
           if (anuncioFind.promocao_anuncio)
             precoFinalAnuncio =
               anuncioFind.preco_venda - anuncioFind.promocao_anuncio;
@@ -290,6 +291,7 @@ export const listaAnuncioProdutoComId = async (req, res) => {
                   marcaCamiseta: estampas[i].skusFiltrados[j].marca_camiseta,
                   nomeEstampa: estampas[i].nome_estampa,
                   skuAnuncio: anuncioFind.SKUs_anuncio,
+                  skuQtd: estampas[i].skusFiltrados[j].quantidade,
                 };
                 produtos.push(anuncio);
                 anunciosVisitados.push(anuncioFind._id.toString());
@@ -314,6 +316,7 @@ export const listaAnuncioProdutoComId = async (req, res) => {
                   marcaCamiseta: estampas[i].skusFiltrados[j].marca_camiseta,
                   nomeEstampa: estampas[i].nome_estampa,
                   skuAnuncio: anuncioFind.SKUs_anuncio,
+                  skuQtd: estampas[i].skusFiltrados[j].quantidade,
                 };
                 produtos.push(anuncio);
                 anunciosVisitados.push(anuncioFind._id.toString());
@@ -338,6 +341,7 @@ export const listaAnuncioProdutoComId = async (req, res) => {
                   marcaCamiseta: estampas[i].skusFiltrados[j].marca_camiseta,
                   nomeEstampa: estampas[i].nome_estampa,
                   skuAnuncio: anuncioFind.SKUs_anuncio,
+                  skuQtd: estampas[i].skusFiltrados[j].quantidade,
                 };
                 produtos.push(anuncio);
                 anunciosVisitados.push(anuncioFind._id.toString());
@@ -360,11 +364,14 @@ export const listaAnuncioProdutoComId = async (req, res) => {
                 marcaCamiseta: estampas[i].skusFiltrados[j].marca_camiseta,
                 nomeEstampa: estampas[i].nome_estampa,
                 skuAnuncio: anuncioFind.SKUs_anuncio,
+                skuQtd: estampas[i].skusFiltrados[j].quantidade,
               };
               produtos.push(anuncio);
               anunciosVisitados.push(anuncioFind._id.toString());
             }
           }
+          }
+          
         }
       }
     }
@@ -483,6 +490,29 @@ export const editarAnuncio = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Erro ao editar",
+    });
+  }
+};
+
+export const ativacaoAnuncio = async (req, res) => {
+  try {
+    const statusAnuncio = req.body.ativo ? false : true;
+    const anuncio = await anunciosModel.findByIdAndUpdate(
+      req.params.pid,
+      { ativo_anuncio: statusAnuncio },
+      { new: true }
+    );
+
+    //registro no banco
+    await anuncio.save();
+    res.status(201).send({
+      success: true,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).send({
+      success: false,
+      message: "Erro na ativação",
     });
   }
 };

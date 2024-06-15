@@ -1,5 +1,5 @@
 import express from "express";
-import { cadastroAnuncio, listaAnuncioProduto, listaAnuncioProdutoComId, listAnuncios, detalheAnuncio, editarAnuncio } from "../controllers/anunciosController.js";
+import { cadastroAnuncio, listaAnuncioProduto, listaAnuncioProdutoComId, listAnuncios, detalheAnuncio, editarAnuncio, ativacaoAnuncio } from "../controllers/anunciosController.js";
 
 //Cria o roteador http
 const anunciosRouter = express.Router();
@@ -12,6 +12,7 @@ anunciosRouter.get("/", listAnuncios);
 anunciosRouter.get("/:pid", detalheAnuncio);
 
 anunciosRouter.put("/editar/:pid", editarAnuncio);
+anunciosRouter.put("/ativacao/:pid", ativacaoAnuncio);
 
 anunciosRouter.post("/home", listaAnuncioProduto);
 

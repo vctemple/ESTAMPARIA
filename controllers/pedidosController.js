@@ -61,6 +61,10 @@ export const cadastroPedido = async (req, res) => {
 
 export const listPedidosDeUsuario = async (req, res) => {
   try {
+    let datalimite = new Date();
+    datalimite.setDate(datalimite.getDate() - 3);
+    const pedidosAtualizar = await pedidosModel.updateMany({$and: [{usuario: req.params.pid}, {createdAt: {$lt: datalimite}}, {status: "PENDENTE"}]} , {$set: {status: "CANCELADO"}})
+    
     const pedidosUser = await pedidosModel
       .find({ usuario: req.params.pid })
       .sort({ createdAt: -1 });
